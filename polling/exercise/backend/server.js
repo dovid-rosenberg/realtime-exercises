@@ -11,7 +11,7 @@ const getMsgs = () => Array.from(msg).reverse();
 msg.push({
   user: "brian",
   text: "hi",
-  time: Date.now(),
+  time: Date.now()
 });
 
 // get express ready to run
@@ -20,17 +20,23 @@ app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(express.static("frontend"));
 
-app.get("/poll", function (req, res) {
-  // use getMsgs to get messages to send back
-  // write code here
+app.get("/poll", function(req, res) {
+  res.json({
+    msg: getMsgs()
+  });
 });
 
-app.post("/poll", function (req, res) {
-  // add a new message to the server
-  // write code here
+app.post("/poll", function(req, res) {
+  const { user, text } = req.body;
+
+  msg.push({
+    user, text, time: Date.now()
+  });
+
+  res.json({ status: "ok" });
 });
 
 // start the server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5050;
 app.listen(port);
 console.log(`listening on http://localhost:${port}`);
