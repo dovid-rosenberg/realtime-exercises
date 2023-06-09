@@ -8,20 +8,40 @@ let allChat = [];
 const INTERVAL = 3000;
 
 // a submit listener on the form in the HTML
-chat.addEventListener("submit", function (e) {
+chat.addEventListener("submit", function(e) {
   e.preventDefault();
   postNewMsg(chat.elements.user.value, chat.elements.text.value);
   chat.elements.text.value = "";
 });
 
 async function postNewMsg(user, text) {
-  // post to /poll a new message
-  // write code here
+  const data = {
+    user, text
+  };
+
+  const options = {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  };
+
+  await fetch("/poll", options);
+
 }
 
 async function getNewMsgs() {
-  // poll the server
-  // write code here
+  let json;
+
+  try {
+    const res = await fetch("/poll");
+    json = await res.json();
+  } catch (error) {
+    console.log("polling error", error);
+  }
+
+  allChat = json.msg;
+  render();
+  setTimeout(getNewMsgs, INTERVAL);
 }
 
 function render() {
